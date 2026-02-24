@@ -1,0 +1,31 @@
+# Runtime-generated config files (written by calibration/layout mode at runtime)
+daemon/config/*.json
+
+# ESPHome build artifacts
+**/.esphome/
+
+# ESPHome secrets
+**/secrets.yaml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Go build artifacts
+daemon/ulanzi-control
+daemon/ulanzi-control.exe
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
