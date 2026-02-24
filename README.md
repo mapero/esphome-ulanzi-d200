@@ -1,5 +1,7 @@
 # esphome-ulanzi-d200
 
+[![GitHub](https://img.shields.io/badge/GitHub-mapero%2Fesphome--ulanzi--d200-blue?logo=github)](https://github.com/mapero/esphome-ulanzi-d200)
+
 ESPHome external component for the **Ulanzi D200** stream deck. Connects an ESP32 to the D200 display over UART and exposes a declarative YAML interface for building interactive dashboards.
 
 ## What it does
@@ -166,6 +168,11 @@ components/
     __init__.py         ESPHome component definition (schema + codegen)
     ulanzi_d200.h       C++ class declaration
     ulanzi_d200.cpp     C++ implementation
+daemon/
+  cmd/ulanzi-control/   Go daemon binary (runs on the D200, ARMv7 Linux)
+  pkg/                  Internal packages (state, transport, ui)
+  deploy/               Init script and wrapper for deployment via ADB
+  go.mod / go.sum
 docs/
   configuration.md      Full configuration reference
 examples/
