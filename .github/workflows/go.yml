@@ -1,0 +1,49 @@
+name: Go Build & Lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "daemon/**"
+      - ".github/workflows/go.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "daemon/**"
+      - ".github/workflows/go.yml"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Go vet
+        run: cd daemon && go vet ./...
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          working-directory: daemon
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Cross-compile for ARMv7
+        run: cd daemon && GOOS=linux GOARCH=arm GOARM=7 go build -o ulanzi-control ./cmd/ulanzi-control/
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ulanzi-control
+          path: daemon/ulanzi-control

@@ -1,0 +1,44 @@
+name: ESPHome Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "components/**"
+      - "examples/**"
+      - ".github/workflows/esphome.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "components/**"
+      - "examples/**"
+      - ".github/workflows/esphome.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ESPHome
+        run: pip install esphome
+
+      - name: Create dummy secrets
+        run: |
+          cat > examples/secrets.yaml <<'EOF'
+          wifi_ssid: "CI_TestNetwork"
+          wifi_password: "CI_TestPassword"
+          ap_password: "CI_FallbackPassword"
+          api_encryption_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          ota_password: "CI_OTAPassword"
+          EOF
+
+      - name: Validate basic.yaml
+        run: esphome config examples/basic.yaml
+
+      - name: Validate sensors.yaml
+        run: esphome config examples/sensors.yaml
