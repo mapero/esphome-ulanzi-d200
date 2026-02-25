@@ -3,8 +3,8 @@ package state
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"sync"
 	"time"
 )
@@ -334,7 +334,7 @@ func (s *Store) GetPageByLabel(label string) (int, bool) {
 }
 
 func (s *Store) load() error {
-	file, err := ioutil.ReadFile(STATE_FILE)
+	file, err := os.ReadFile(STATE_FILE)
 	if err != nil { return err }
 	return json.Unmarshal(file, s)
 }
@@ -375,7 +375,9 @@ func (s *Store) saveLoop() {
 			log.Printf("state: marshal error: %v", err)
 			continue
 		}
-		ioutil.WriteFile(STATE_FILE, data, 0644)
+		if err := os.WriteFile(STATE_FILE, data, 0644); err != nil {
+			log.Printf("state: write error: %v", err)
+		}
 	}
 }
 

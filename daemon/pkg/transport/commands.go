@@ -339,8 +339,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -370,7 +369,7 @@ func handleButtonCommand(action string, params []string) Response {
 
 		pageID := state.GlobalStore.CurrentPage
 		if len(params) >= 4 {
-			fmt.Sscanf(params[3], "%d", &pageID)
+			pageID, _ = strconv.Atoi(params[3])
 		}
 
 		if pageID == -1 {
@@ -396,8 +395,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -409,8 +407,7 @@ func handleButtonCommand(action string, params []string) Response {
 		// Optional page_id parameter
 		var config state.ButtonConfig
 		if len(params) >= 2 {
-			var pageID int
-			fmt.Sscanf(params[1], "%d", &pageID)
+			pageID, _ := strconv.Atoi(params[1])
 			config = state.GlobalStore.GetButton(pageID, buttonID)
 		} else {
 			config = state.GlobalStore.GetCurrentButton(buttonID)
@@ -437,8 +434,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -473,8 +469,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -494,7 +489,7 @@ func handleButtonCommand(action string, params []string) Response {
 
 		pageID := state.GlobalStore.CurrentPage
 		if len(params) >= 3 {
-			fmt.Sscanf(params[2], "%d", &pageID)
+			pageID, _ = strconv.Atoi(params[2])
 		}
 
 		state.GlobalStore.PushGraphValue(pageID, buttonID, value)
@@ -514,8 +509,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -527,7 +521,7 @@ func handleButtonCommand(action string, params []string) Response {
 		// Parse optional page_id (default: current page)
 		pageID := state.GlobalStore.CurrentPage
 		if len(params) >= 3 {
-			fmt.Sscanf(params[2], "%d", &pageID)
+			pageID, _ = strconv.Atoi(params[2])
 		}
 
 		// Parse JSON properties
@@ -592,8 +586,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -602,8 +595,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var pageID int
-		fmt.Sscanf(params[1], "%d", &pageID)
+		pageID, _ := strconv.Atoi(params[1])
 
 		message := params[2]
 		if message == "" {
@@ -640,8 +632,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -650,8 +641,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var pageID int
-		fmt.Sscanf(params[1], "%d", &pageID)
+		pageID, _ := strconv.Atoi(params[1])
 
 		notificationID := params[2]
 		state.GlobalStore.ClearNotification(pageID, buttonID, notificationID)
@@ -671,8 +661,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var buttonID int
-		fmt.Sscanf(params[0], "%d", &buttonID)
+		buttonID, _ := strconv.Atoi(params[0])
 		if buttonID < 0 || buttonID > 14 {
 			return Response{
 				Status:  "error",
@@ -681,8 +670,7 @@ func handleButtonCommand(action string, params []string) Response {
 			}
 		}
 
-		var pageID int
-		fmt.Sscanf(params[1], "%d", &pageID)
+		pageID, _ := strconv.Atoi(params[1])
 
 		state.GlobalStore.ClearAllNotifications(pageID, buttonID)
 
@@ -810,8 +798,7 @@ func handlePageCommand(action string, params []string) Response {
 		if len(params) < 2 {
 			return Response{Status: "error", Code: CODE_INVALID, Message: "Missing parameters (need: page_id, new_label)"}
 		}
-		var pageID int
-		fmt.Sscanf(params[0], "%d", &pageID)
+		pageID, _ := strconv.Atoi(params[0])
 		newLabel := params[1]
 		if err := state.GlobalStore.SetPageLabel(pageID, newLabel); err != nil {
 			return Response{Status: "error", Code: CODE_ERROR, Message: err.Error()}

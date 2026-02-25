@@ -118,16 +118,13 @@ func parseCSS(css string) {
 			// Extract Hex inside quotes
 			start := strings.Index(line, "\"\\")
 			if start != -1 {
-				hexCode := line[start+2 : start+2+5] // Assume 4-5 chars? usually 4 (F0335 is 5?)
-				// Wait, unicode escape \F0335 is 6 chars?
-				// content: "\F0335";
-				// Let's find end quote
 				end := strings.LastIndex(line, "\"")
 				if end > start+2 {
-					hexCode = line[start+2 : end]
+					hexCode := line[start+2 : end]
 					var r rune
-					fmt.Sscanf(hexCode, "%x", &r)
-					iconMap[currentName] = string(r)
+					if _, err := fmt.Sscanf(hexCode, "%x", &r); err == nil {
+						iconMap[currentName] = string(r)
+					}
 					// fmt.Printf("Loaded: %s -> %x\n", currentName, r)
 				}
 			}

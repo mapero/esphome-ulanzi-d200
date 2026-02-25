@@ -7,7 +7,6 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"io/ioutil"
 	"math"
 	"os"
 	"sort"
@@ -59,7 +58,6 @@ var layout = LayoutConfig{
 	GapY:    60,
 }
 
-var buttons [14]bool
 var mode string
 var editMode int
 var modeMu sync.RWMutex
@@ -216,7 +214,9 @@ func handlePageNavigation(btn state.ButtonConfig) bool {
 func main() {
 	mode = "run"
 
-	os.MkdirAll("config", 0755)
+	if err := os.MkdirAll("config", 0755); err != nil {
+		fmt.Println("Failed to create config dir:", err)
+	}
 
 	state.Init()
 
@@ -436,7 +436,9 @@ func handleCalibInput(code uint16, val int32) {
 		calibIndex++
 		if calibIndex >= 14 {
 			data, _ := json.Marshal(KeyMapJSON{Keys: calibKeys[:]})
-			ioutil.WriteFile(KEYMAP_FILE, data, 0644)
+			if err := os.WriteFile(KEYMAP_FILE, data, 0644); err != nil {
+				fmt.Println("Failed to save keymap:", err)
+			}
 			loadKeyMap()
 			fmt.Println("Calibration complete, keymap saved")
 			setMode("layout")
@@ -476,19 +478,16 @@ func changeValue(delta int) {
 	if layout.BtnH < 10 { layout.BtnH = 10 }
 }
 
-func fillRect(fb []byte, color uint32) {
-    // Dummy
-}
-
-
 // defaultKeyMapKeys is the factory calibration for the D200 touch controller.
 // Overridden by config/keymap.json after user calibration.
 var defaultKeyMapKeys = []int{29, 15, 14, 13, 12, 11, 10, 9, 8, 7, 34, 33, 31, 30}
 
 func loadKeyMap() {
 	km := KeyMapJSON{Keys: defaultKeyMapKeys}
-	if file, err := ioutil.ReadFile(KEYMAP_FILE); err == nil {
-		json.Unmarshal(file, &km)
+	if file, err := os.ReadFile(KEYMAP_FILE); err == nil {
+		if err := json.Unmarshal(file, &km); err != nil {
+			fmt.Println("Failed to parse keymap:", err)
+		}
 	}
 	for i, code := range km.Keys {
 		keyMap[uint16(code)] = i
@@ -496,9 +495,11 @@ func loadKeyMap() {
 }
 
 func loadLayout() {
-	file, err := ioutil.ReadFile(LAYOUT_FILE)
+	file, err := os.ReadFile(LAYOUT_FILE)
 	if err == nil {
-		json.Unmarshal(file, &layout)
+		if err := json.Unmarshal(file, &layout); err != nil {
+			fmt.Println("Failed to parse layout:", err)
+		}
 	}
 	if layout.BtnW == 0 { layout.BtnW = 240 }
 	if layout.BtnH == 0 { layout.BtnH = 240 }
@@ -506,7 +507,9 @@ func loadLayout() {
 
 func saveLayout() {
 	data, _ := json.Marshal(layout)
-	ioutil.WriteFile(LAYOUT_FILE, data, 0644)
+	if err := os.WriteFile(LAYOUT_FILE, data, 0644); err != nil {
+		fmt.Println("Failed to save layout:", err)
+	}
 }
 
 // buttonRect computes the rectangle for button i based on the current layout.
