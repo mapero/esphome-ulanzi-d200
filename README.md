@@ -4,6 +4,8 @@
 
 ESPHome external component for the **Ulanzi D200** stream deck. Connects an ESP32 to the D200 display over UART and exposes a declarative YAML interface for building interactive dashboards.
 
+![Ulanzi D200 running with ESPHome](docs/images/esphome-ulanzi-d200.jpg)
+
 ## What it does
 
 The D200 is a physical stream deck with a 14-button capacitive grid (5×3 layout, button 13 is double-wide). An ESP32 bridges the D200 to Home Assistant over WiFi using this component.
@@ -13,6 +15,10 @@ The D200 is a physical stream deck with a 14-button capacitive grid (5×3 layout
 - React to button presses and releases with ESPHome automations
 - Sync state bidirectionally with Home Assistant entities
 - Auto-expose a display brightness light and optional diagnostic sensors
+
+## Prerequisites
+
+The D200 requires hardware modification (soldering UART wires) and software changes (disabling the kernel console and stock application) before this component can be used. See the **[D200 Preparation Guide](docs/d200-preparation.md)** for step-by-step instructions.
 
 ## Hardware
 
