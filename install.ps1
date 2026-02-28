@@ -209,17 +209,22 @@ if ($LASTEXITCODE -ne 0) { Write-Err "Failed to push init script" }
 & adb shell "chmod 755 $InitScript"
 Write-Ok "Init script deployed"
 
-# ── Start service ────────────────────────────────────────────────────────────
-Write-Info "Starting service..."
-& adb shell "$InitScript start"
-if ($LASTEXITCODE -ne 0) { Write-Err "Failed to start service" }
-Start-Sleep -Seconds 1
+# ── Reboot device ────────────────────────────────────────────────────────────
+Write-Info "Rebooting device..."
+& adb reboot
+Write-Ok "Reboot initiated - device will start ulanzi-control on boot"
 
+Write-Info "Waiting for device to come back online..."
+& adb wait-for-device
+Write-Ok "Device is back"
+
+# Verify process is running
+Start-Sleep -Seconds 3  # give init scripts time to start services
 $processPid = (& adb shell "pidof $BinaryName" 2>&1).Trim()
 if ($processPid) {
     Write-Ok "Service running (PID: $processPid)"
 } else {
-    Write-Warn "Process not found - check logs with: adb shell 'cat $InstallDir/logs/ulanzi-control.log'"
+    Write-Warn "Process not yet running - it may still be starting up"
 }
 
 # ── Summary ──────────────────────────────────────────────────────────────────
@@ -237,6 +242,7 @@ Write-Host "  View logs:       adb shell 'cat $InstallDir/logs/ulanzi-control.lo
 Write-Host "  Follow logs:     adb shell 'tail -f $InstallDir/logs/ulanzi-control.log'"
 Write-Host "  Restart service: adb shell '$InitScript restart'"
 Write-Host "  Stop service:    adb shell '$InitScript stop'"
+Write-Host "  Reboot device:   adb reboot"
 Write-Host ""
 
 } finally {

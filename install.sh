@@ -199,17 +199,22 @@ adb push "$INIT_PATH" "${INIT_SCRIPT}" || error "Failed to push init script"
 adb shell "chmod 755 ${INIT_SCRIPT}"
 ok "Init script deployed"
 
-# ── Start service ────────────────────────────────────────────────────────────
-info "Starting service..."
-adb shell "${INIT_SCRIPT} start" || error "Failed to start service"
-sleep 1
+# ── Reboot device ────────────────────────────────────────────────────────────
+info "Rebooting device..."
+adb reboot
+ok "Reboot initiated — device will start ulanzi-control on boot"
+
+info "Waiting for device to come back online..."
+adb wait-for-device
+ok "Device is back"
 
 # Verify process is running
+sleep 3  # give init scripts time to start services
 if adb shell "pidof ${BINARY_NAME}" >/dev/null 2>&1; then
     PID=$(adb shell "pidof ${BINARY_NAME}" | tr -d '\r')
     ok "Service running (PID: ${PID})"
 else
-    warn "Process not found — check logs with: adb shell 'cat ${INSTALL_DIR}/logs/ulanzi-control.log'"
+    warn "Process not yet running — it may still be starting up"
 fi
 
 # ── Summary ──────────────────────────────────────────────────────────────────
@@ -227,4 +232,5 @@ echo "  View logs:       adb shell 'cat ${INSTALL_DIR}/logs/ulanzi-control.log'"
 echo "  Follow logs:     adb shell 'tail -f ${INSTALL_DIR}/logs/ulanzi-control.log'"
 echo "  Restart service: adb shell '${INIT_SCRIPT} restart'"
 echo "  Stop service:    adb shell '${INIT_SCRIPT} stop'"
+echo "  Reboot device:   adb reboot"
 echo ""
