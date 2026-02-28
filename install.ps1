@@ -5,8 +5,8 @@
     and deploys it to a D200 connected via ADB.
 
 .EXAMPLE
-    .\install.ps1              # install latest release
-    .\install.ps1 -Version v0.2.0   # install specific version
+    powershell -ExecutionPolicy Bypass -File install.ps1
+    powershell -ExecutionPolicy Bypass -File install.ps1 -Version v0.2.0
 #>
 param(
     [string]$Version = ""
