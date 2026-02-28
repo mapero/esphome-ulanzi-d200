@@ -27,4 +27,5 @@ jobs:
           files: |
             daemon/ulanzi-control
             install.sh
+            install.bat
             install.ps1
