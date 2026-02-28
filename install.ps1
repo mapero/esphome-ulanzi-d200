@@ -215,9 +215,9 @@ Write-Info "Starting service..."
 if ($LASTEXITCODE -ne 0) { Write-Err "Failed to start service" }
 Start-Sleep -Seconds 1
 
-$pid = (& adb shell "pidof $BinaryName" 2>&1).Trim()
-if ($pid) {
-    Write-Ok "Service running (PID: $pid)"
+$processPid = (& adb shell "pidof $BinaryName" 2>&1).Trim()
+if ($processPid) {
+    Write-Ok "Service running (PID: $processPid)"
 } else {
     Write-Warn "Process not found - check logs with: adb shell 'cat $InstallDir/logs/ulanzi-control.log'"
 }
